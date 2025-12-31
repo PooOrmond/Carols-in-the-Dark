@@ -724,8 +724,8 @@ class CarolingGame {
         }, 4000);
     }
     
-    onGameComplete(success, finalSatisfaction, score, maxCombo) {
-        console.log('Game completed:', { success, finalSatisfaction, score, maxCombo });
+    onGameComplete(success, finalSatisfaction, score) {
+        console.log('Game completed:', { success, finalSatisfaction, score });
 
         if (success) {
             this.totalScore += score;
@@ -747,15 +747,15 @@ class CarolingGame {
 
             // ❗ IMPORTANT:
             // Immediately return to 3D world (NO failure screen)
-            this.exitGame(false, finalSatisfaction, score, maxCombo);
+            this.exitGame(false, finalSatisfaction, score);
             return;
         }
 
         // Only show completion screen on SUCCESS
-        this.showCompletionScreen(success, finalSatisfaction, score, maxCombo);
+        this.showCompletionScreen(success, finalSatisfaction, score);
     }
     
-    showCompletionScreen(success, finalSatisfaction, score, maxCombo) {
+    showCompletionScreen(success, finalSatisfaction, score) {
         const completionScreen = document.createElement('div');
         completionScreen.id = 'carolingCompletionScreen';
         completionScreen.style.cssText = `
@@ -885,7 +885,7 @@ class CarolingGame {
             if (remainingTime <= 0) {
                 clearInterval(this.exitCountdownInterval);
                 this.exitCountdownInterval = null;
-                this.exitGameWithResult(success, finalSatisfaction, score, maxCombo);
+                this.exitGameWithResult(success, finalSatisfaction, score);
             }
         }, 1000);
 
@@ -901,7 +901,7 @@ class CarolingGame {
                 document.removeEventListener('keydown', this.completionKeyListener);
                 this.completionKeyListener = null;
 
-                this.exitGameWithResult(success, finalSatisfaction, score, maxCombo);
+                this.exitGameWithResult(success, finalSatisfaction, score);
             }
         };
 
@@ -922,11 +922,11 @@ class CarolingGame {
         }
         
         setTimeout(() => {
-            this.exitGameWithResult(true, this.currentSatisfaction, bonusScore, 0);
+            this.exitGameWithResult(true, this.currentSatisfaction, bonusScore);
         }, 300);
     }
     
-    exitGameWithResult(success, finalSatisfaction, score, maxCombo) {
+    exitGameWithResult(success, finalSatisfaction, score) {
         
         if (this.autoExitTimer) {
             clearTimeout(this.autoExitTimer);
@@ -939,11 +939,11 @@ class CarolingGame {
         }
         
         setTimeout(() => {
-            this.exitGame(success, finalSatisfaction, score, maxCombo);
+            this.exitGame(success, finalSatisfaction, score);
         }, 300);
     }
     
-    exitGame(success, finalSatisfaction = 0, score = 0, maxCombo = 0) {
+    exitGame(success, finalSatisfaction = 0, score = 0) {
         if (this.exitCountdownInterval) {
             clearInterval(this.exitCountdownInterval);
             this.exitCountdownInterval = null;
@@ -995,7 +995,6 @@ class CarolingGame {
                     success: success,
                     finalSatisfaction: finalSatisfaction,
                     score: score,
-                    maxCombo: maxCombo,
                     houseNumber: this.currentHouse,
                     completedHouseNumbers: this.completedHouseNumbers,
                     totalScore: this.totalScore,
@@ -1032,8 +1031,6 @@ class CarolingScene extends Phaser.Scene {
         this.keys = ['A', 'S', 'K', 'L'];
         
         this.score = 0;
-        this.combo = 0;
-        this.maxCombo = 0;
         this.satisfaction = carolingGame.currentSatisfaction;
         this.totalNotes = 0;
         this.hitNotes = 0;
@@ -1050,7 +1047,6 @@ class CarolingScene extends Phaser.Scene {
         this.monster = null;
         this.satisfactionText = null;
         this.scoreText = null;
-        this.comboText = null;
         
         this.audioSource = null;
         this.songEnded = false;
@@ -1212,14 +1208,6 @@ class CarolingScene extends Phaser.Scene {
             fontStyle: 'bold',
             stroke: '#000',
             strokeThickness: 6
-        }).setOrigin(0.5);
-        
-        this.comboText = this.add.text(width/2, 100, `COMBO: ${this.combo}`, {
-            fontSize: '28px',
-            fill: '#00FFFF',
-            fontStyle: 'bold',
-            stroke: '#000',
-            strokeThickness: 5
         }).setOrigin(0.5);
     }
     
@@ -1478,8 +1466,6 @@ class CarolingScene extends Phaser.Scene {
             }
             
             this.score += score;
-            this.combo++;
-            this.maxCombo = Math.max(this.maxCombo, this.combo);
             this.satisfaction += satisfactionChange;
             this.satisfaction = Phaser.Math.Clamp(this.satisfaction, 0, 100);
             
@@ -1495,7 +1481,6 @@ class CarolingScene extends Phaser.Scene {
         } else {
             this.missedNotes++;
             this.satisfaction += this.carolingGame.satisfactionRate.bad;
-            this.combo = 0;
 
             if (this.monster) {
                 this.monster.setScale(2.8);
@@ -1523,7 +1508,6 @@ class CarolingScene extends Phaser.Scene {
         
         this.missedNotes++;
         this.satisfaction += this.carolingGame.satisfactionRate.bad;
-        this.combo = 0;
         
         this.updateUI();
         this.updateMonsterMood();
@@ -1593,7 +1577,6 @@ class CarolingScene extends Phaser.Scene {
     
     updateUI() {
         this.scoreText.setText(`SCORE: ${this.score}`);
-        this.comboText.setText(`COMBO: ${this.combo}`);
         this.satisfactionText.setText(`SATISFACTION: ${Math.round(this.satisfaction)}%`);
     }
     
@@ -1626,7 +1609,7 @@ class CarolingScene extends Phaser.Scene {
             Math.round((this.hitNotes / this.totalNotes) * 100) : 0;
         
         console.log(`Game ended. Success: ${success}, Accuracy: ${accuracy}%, Satisfaction: ${this.satisfaction}%`);
-        this.carolingGame.onGameComplete(success, this.satisfaction, this.score, this.maxCombo);
+        this.carolingGame.onGameComplete(success, this.satisfaction, this.score);
     }
     
     update() {
@@ -1643,5 +1626,4 @@ class CarolingScene extends Phaser.Scene {
             }
         }
     }
-
 }
