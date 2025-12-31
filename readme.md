@@ -5,6 +5,13 @@ https://pooormond.github.io/Carols-in-the-Dark/
 
 ---
 
+# 👥 Development Team
+
+| Name | Role | Contributions |
+|------|------|---------------|
+| **Richmond M. Caga** | **Project Lead & 3D Developer** | Three.js world architecture, player movement, environment design, game state management, GitHub deployment |
+| **Kent Almeda Mapano** | **Rhythm Game Developer & Audio Designer** | Phaser 3 rhythm game implementation, audio system (Web Audio API), UI/UX design, asset management |
+
 ## 📘 Project Overview
 
 **Carols in the Dark** is a browser-based **3D first-person horror rhythm game** developed as a **final project requirement** for our school’s Full-Stack Development course.
