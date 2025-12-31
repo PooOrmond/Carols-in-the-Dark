@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carols in the Dark</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+</head>
+<body>
+    <!-- Menu Container -->
+    <div class="game-menu-container" id="menuContainer">
+        <!-- Snowflakes -->
+        <div class="snow" style="left: 10%; animation-duration: 10s;">❄</div>
+        <div class="snow" style="left: 20%; animation-duration: 15s;">❄</div>
+        <div class="snow" style="left: 30%; animation-duration: 12s;">❄</div>
+        <div class="snow" style="left: 40%; animation-duration: 8s;">❄</div>
+        <div class="snow" style="left: 50%; animation-duration: 14s;">❄</div>
+        <div class="snow" style="left: 60%; animation-duration: 9s;">❄</div>
+        <div class="snow" style="left: 70%; animation-duration: 11s;">❄</div>
+        <div class="snow" style="left: 80%; animation-duration: 13s;">❄</div>
+        <div class="snow" style="left: 90%; animation-duration: 7s;">❄</div>
+
+        <!-- Forest Background -->
+        <div class="forest"></div>
+        <div class="tree" style="left: 5%; height: 200px;"></div>
+        <div class="tree" style="left: 15%; height: 180px;"></div>
+        <div class="tree" style="left: 25%; height: 220px;"></div>
+        <div class="tree" style="left: 35%; height: 190px;"></div>
+        <div class="tree" style="left: 75%; height: 210px;"></div>
+        <div class="tree" style="left: 85%; height: 170px;"></div>
+        <div class="tree" style="left: 95%; height: 200px;"></div>
+
+        <!-- Creepy Eyes -->
+        <div class="eye" style="top: 20%; left: 15%;"></div>
+        <div class="eye" style="top: 30%; left: 85%;"></div>
+        <div class="eye" style="top: 70%; left: 25%;"></div>
+        <div class="eye" style="top: 80%; left: 75%;"></div>
+
+        <!-- Main Menu -->
+        <div class="game-menu">
+            <!-- Christmas Ornaments -->
+            <div class="ornament red" style="top: -15px; left: -15px;"></div>
+            <div class="ornament green" style="top: -15px; right: -15px;"></div>
+            <div class="ornament red" style="bottom: -15px; left: -15px;"></div>
+            <div class="ornament green" style="bottom: -15px; right: -15px;"></div>
+
+            <h1 class="game-title">Carols in the Dark</h1>
+            
+            <div class="subtitle">
+                A chilling journey through a haunted Christmas village
+            </div>
+            
+            <button class="start-button" id="startButton">
+                Start Game
+            </button>
+            
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- Game UI (will be hidden when moving) -->
+        <div class="game-ui">
+            <div class="crosshair"></div>
+            <div class="instructions">
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen" style="display: none;">
+        <div class="loading-text">Loading Christmas Nightmare...</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+    </div>
+
+    <!-- Door Prompt Popup -->
+    <div id="doorPrompt" class="hidden">
+        <div class="prompt-box">
+            <p>Click <b>ENTER</b> to start</p>
+            <div id="enterButton">ENTER</div>
+        </div>
+    </div>
+
+    <!-- Settings Menu -->
+    <div id="settingsMenu" class="settings-menu hidden">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2>⚙️ SETTINGS</h2>
+                <button id="closeSettings" class="close-btn">×</button>
+            </div>
+            
+            <div class="settings-section">
+                <h3>🎵 AUDIO SETTINGS</h3>
+                
+                <div class="setting-item">
+                    <label for="musicVolume">Background Music Volume</label>
+                    <div class="volume-control">
+                        <input type="range" id="musicVolume" min="0" max="100" value="50" class="volume-slider">
+                        <span id="musicVolumeValue">50%</span>
+                    </div>
+                </div>
+                
+                <div class="setting-item">
+                    <label for="sfxVolume">Sound Effects Volume</label>
+                    <div class="volume-control">
+                        <input type="range" id="sfxVolume" min="0" max="100" value="70" class="volume-slider">
+                        <span id="sfxVolumeValue">70%</span>
+                    </div>
+                </div>
+                
+                <div class="settings-item">
+                    <label for="carolVolume">Carol Song Volume:</label>
+                    <div class="slider-container">
+                        <input type="range" id="carolVolume" min="0" max="100" value="70" class="volume-slider">
+                        <span id="carolVolumeValue">70%</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label>
+                        <input type="checkbox" id="muteAudio">
+                        <span class="checkbox-label">Mute All Audio</span>
+                    </label>
+                </div>
+                
+                <button id="testSound" class="test-btn">Test Sound</button>
+            </div>
+            
+            <div class="settings-section">
+                <h3>🎮 CONTROLS</h3>
+                
+                <div class="setting-item">
+                    <label for="forwardKey">Move Forward</label>
+                    <input type="text" id="forwardKey" class="key-input" readonly value="W">
+                </div>
+                
+                <div class="setting-item">
+                    <label for="backwardKey">Move Backward</label>
+                    <input type="text" id="backwardKey" class="key-input" readonly value="S">
+                </div>
+                
+                <div class="setting-item">
+                    <label for="leftKey">Move Left</label>
+                    <input type="text" id="leftKey" class="key-input" readonly value="A">
+                </div>
+                
+                <div class="setting-item">
+                    <label for="rightKey">Move Right</label>
+                    <input type="text" id="rightKey" class="key-input" readonly value="D">
+                </div>
+                
+                <div class="setting-item">
+                    <label for="jumpKey">Jump</label>
+                    <input type="text" id="jumpKey" class="key-input" readonly value="SPACE">
+                </div>
+                
+                <div class="setting-item">
+                    <label for="runKey">Run</label>
+                    <input type="text" id="runKey" class="key-input" readonly value="SHIFT">
+                </div>
+                
+                <div class="setting-item">
+                    <label for="interactKey">Interact</label>
+                    <input type="text" id="interactKey" class="key-input" readonly value="ENTER">
+                </div>
+                
+                <div class="reset-controls">
+                    <button id="resetControls" class="reset-btn">Reset to Default</button>
+                </div>
+            </div>
+            
+            <div class="settings-footer">
+                <button id="saveSettings" class="save-btn">Save & Resume</button>
+                <button id="exitToMenu" class="exit-btn">Exit to Main Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="environment.js"></script>
+    <script src="caroling.js"></script>
+    <script src="audio.js"></script>
+    <script src="player.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
