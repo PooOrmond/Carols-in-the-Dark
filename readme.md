@@ -122,8 +122,8 @@ Each system is modular and communicates via controlled callbacks.
 - ├── caroling.js
 - ├── assets/
 - │ ├── music/
-- │ ├── textures/
-- │ └── images/
+- │ ├── model/
+- │ └── sounds/
 - └── README.md
 
 ---
