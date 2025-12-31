@@ -803,10 +803,6 @@ class CarolingGame {
                 House Score: <span style="color:#FFFF00">${score}</span>
             </div>
 
-            <div style="font-size: 22px; margin-bottom: 20px;">
-                Max Combo: <span style="color:#00FFFF">${maxCombo}</span>
-            </div>
-
             <div style="font-size: 20px; margin-bottom: 25px; color:#AAAAAA;">
                 Total Score: <span style="color:#FFFF00">${this.totalScore}</span>
             </div>
