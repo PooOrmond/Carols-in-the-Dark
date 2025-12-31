@@ -114,7 +114,7 @@ Each system is modular and communicates via controlled callbacks.
 
 ## 📁 Project Structure
 
-Carols-in-the-Dark/
+- Carols-in-the-Dark/
 - ├── index.html
 - ├── main.js
 - ├── player.js
