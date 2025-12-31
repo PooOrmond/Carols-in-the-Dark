@@ -115,16 +115,16 @@ Each system is modular and communicates via controlled callbacks.
 ## 📁 Project Structure
 
 Carols-in-the-Dark/
-├── index.html
-├── main.js
-├── player.js
-├── environment.js
-├── caroling.js
-├── assets/
-│ ├── music/
-│ ├── textures/
-│ └── images/
-└── README.md
+- ├── index.html
+- ├── main.js
+- ├── player.js
+- ├── environment.js
+- ├── caroling.js
+- ├── assets/
+- │ ├── music/
+- │ ├── textures/
+- │ └── images/
+- └── README.md
 
 ---
 
